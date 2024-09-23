@@ -1,12 +1,17 @@
 import pandas as pd
 from datetime import datetime
+from tabulate import tabulate
+import os
 
 class time_table:
     ## 실행 시
     def __init__(self) -> None:
-        self.time_table = pd.read_excel("C:/Users/user/Desktop/작업중/노래DB예시.xlsx")
+        self.time_table = pd.read_excel(os.path.join(os.getcwd(), "노래Table.xlsx"))
         self.times = self.time_table['시간'].apply(lambda x:x.replace('"','')).to_list()
         self.tasks = self.time_table['요청사항'].array.tolist()
+    
+    def show_task(self):
+        print(tabulate(self.time_table.values, headers=self.time_table.columns, tablefmt='grid'))
 
 class task:
     def __init__(self, time_table) -> None:

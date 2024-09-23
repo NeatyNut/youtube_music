@@ -32,6 +32,7 @@ class is_setting_user:
         self.chrome = chrome_driver_setting(True)
         self.driver = webdriver.Chrome(self.chrome.address, options=self.chrome.options)
         self.driver.implicitly_wait(3)
+        ## 검색한 걸로 판단하느라 불완전할 수도 있음.
         self.driver.get(url='https://music.youtube.com/search?q=%EC%B5%9C%EC%9C%A0%EB%A6%AC%20%EC%88%B2/')
         self.status = True if self.driver.current_url.count("musicpremium") < 1 else False
         self.driver.quit()
@@ -76,18 +77,3 @@ class auto_youtube:
 
     def quit(self):
         self.driver.quit()
-
-## 클래스화
-check = is_setting_user()
-if not check.status:
-    print("계정 정보를 삭제합니다.")
-    check.auto_delete()
-    login_status = check.login()
-
-else:
-    start = auto_youtube()
-    time.sleep(10)
-    start.query_open("최유리 숲")
-    time.sleep(10)
-    start.url_open("https://music.youtube.com/watch?v=-pUpgeZPUCI&list=RDAMVM-pUpgeZPUCI")
-    time.sleep(10)
