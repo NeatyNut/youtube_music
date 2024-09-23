@@ -11,7 +11,8 @@ class time_table:
         self.tasks = self.time_table['요청사항'].array.tolist()
     
     def show_task(self):
-        print(tabulate(self.time_table.values, headers=self.time_table.columns, tablefmt='grid'))
+        tabulate.WIDE_CHARS_MODE = False
+        print(tabulate(self.time_table.values, headers=self.time_table.columns, tablefmt='pretty'))
 
 class task:
     def __init__(self, time_table) -> None:
