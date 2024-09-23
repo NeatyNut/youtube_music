@@ -26,15 +26,15 @@ while status:
     ## 20시 도달 시
     if datetime.now().hour > 19:
         auto_song.quit()
-        time.sleep(13*60*60 - datetime.now().minute*60)
         print("내일까지 off 중")
+        time.sleep(13*60*60 - datetime.now().minute*60)
         continue
     
     ## 점심 시간 자동 종료
     elif datetime.now().hour == 12:
         auto_song.quit()
-        time.sleep(3600 - datetime.now().minute*60)
         print("점심시간 off 중")
+        time.sleep(3600 - datetime.now().minute*60)
         continue
     
     ## 새로운 task가 있다면
