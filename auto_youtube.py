@@ -61,7 +61,13 @@ class auto_youtube:
         self.driver.implicitly_wait(3)
         self.driver.get(url=song_url)
         self.driver.implicitly_wait(3)
-        play_button = self.driver.find_element(By.CSS_SELECTOR, "#icon")
+        
+        # 플레이 리스트 vs 개별 음악
+        if 'playlist' in song_url:
+            play_button = self.driver.find_element(By.CSS_SELECTOR, "#action-buttons > ytmusic-play-button-renderer")
+        else : 
+            play_button = self.driver.find_element(By.CSS_SELECTOR, "#icon")
+
         play_button.click()
 
     ## 쿼리 기준

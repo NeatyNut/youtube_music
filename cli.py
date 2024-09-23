@@ -10,7 +10,6 @@ print("현재 시간은", str(datetime.now())[:-7], "입니다.")
 time_table = time_tasks.time_table()
 time_table.show_task()
 
-
 user_setting = youtube.is_setting_user()
 
 if not user_setting.status:
@@ -23,22 +22,23 @@ auto_song = youtube.auto_youtube()
 while status:
     ## 새로운 task 있는 지 확인
     now_query = tasks.time_task()
-    
-    if now_query == "":
-        now_query = query
 
-    ## 특정 시간 시 자동 종료
-    if datetime.now().hour > 18 or datetime.now().hour < 9:
-        status = False
-        break
-    ## 점심 시간 자동 종료
-    elif datetime.now().hour == 12 and datetime.now().minute >= 30:
+    ## 20시 도달 시
+    if datetime.now().hour > 19:
         auto_song.quit()
-        time.sleep(3600)
+        time.sleep(13*60*60 - datetime.now().minute*60)
+        print("내일까지 off 중")
+        continue
+    
+    ## 점심 시간 자동 종료
+    elif datetime.now().hour == 12:
+        auto_song.quit()
+        time.sleep(3600 - datetime.now().minute*60)
+        print("점심시간 off 중")
         continue
     
     ## 새로운 task가 있다면
-    if query != now_query:
+    if query != now_query and now_query != "":
         query = now_query
         auto_song.quit()
         try :
