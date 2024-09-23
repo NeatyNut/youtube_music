@@ -43,7 +43,10 @@ while status:
         auto_song.quit()
         try :
             auto_song = youtube.auto_youtube()
-            auto_song.query_open(query)
+            if "http" in query:
+                auto_song.url_open(query)
+            else :
+                auto_song.query_open(query)
         except :
             continue
         
