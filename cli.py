@@ -26,9 +26,7 @@ while status:
     ## 20시 도달 시
     if datetime.now().hour > 19:
         auto_song.quit()
-        print("내일까지 off 중")
-        time.sleep(13*60*60 - datetime.now().minute*60)
-        continue
+        status = False
     
     ## 점심 시간 자동 종료
     elif datetime.now().hour == 12:
