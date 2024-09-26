@@ -1,3 +1,0 @@
-python .\cli.py
-
-pause
