@@ -66,6 +66,7 @@ class time_table:
                     self.pause_hour = int(self.pause_hour)
                     self.pause_minute = int(self.pause_minute)
                     self.pause_time = self.onoff_table[self.onoff_table[self.onoff_table.columns[0]] == 'PAUSE'].iloc[0, 2]
+                    self.pause_time = int(self.pause_time)
                 else :
                     self.pause_hour = 0
                     self.pause_minute = 0

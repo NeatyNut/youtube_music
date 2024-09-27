@@ -35,7 +35,7 @@ if time_table.status:
         now_time = datetime.now() #### 현재시간 뽑기
         
         #### <ON TIME 확인>
-        if not now_time.hour > time_table.on_hour or (now_time.hour == time_table.on_hour and now_time.minute >= time_table.on_minute):
+        if now_time.hour < time_table.on_hour or (now_time.hour == time_table.on_hour and now_time.minute < time_table.on_minute):
             pause_time = (time_table.on_hour - now_time.hour)*3600 + (now_time.minute - now_time.minute)*60 ##### 시, 분 차를 계산
             print(f"{str(pause_time)}초 후 노래를 실행합니다.")
             time.sleep(pause_time)
