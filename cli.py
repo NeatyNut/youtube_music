@@ -15,6 +15,7 @@ if not isholiday.holiday:
 
     ## (타임 테이블 클래스 생성)
     time_table = time_tasks.time_table()
+    ex_time_table = time_table.time_table
 
     ## 오류 발생 시, 창 띄워두기 위한 bool
     pause_status = True
@@ -38,7 +39,7 @@ if not isholiday.holiday:
         ### (타임 테이블 클래스 프로그램 허용 Bool)
         while time_table.status:
             now_time = datetime.now() #### 현재시간 뽑기
-            
+
             #### <ON TIME 확인>
             if now_time.hour < time_table.on_hour or (now_time.hour == time_table.on_hour and now_time.minute < time_table.on_minute):
                 pause_time = (time_table.on_hour - now_time.hour)*3600 + (now_time.minute - now_time.minute)*60 ##### 시, 분 차를 계산
@@ -69,6 +70,9 @@ if not isholiday.holiday:
                 time.sleep(time_table.pause_time*3600 - (datetime.now().minute - time_table.pause_minute)*60) ##### 분 오차를 계산
                 continue
             
+            #### 테이블 변경 확인
+            time_table.check_time_table()
+
             #### 시간대 task 요청
             now_query = tasks.time_task()
 
@@ -95,11 +99,11 @@ if not isholiday.holiday:
                 except :
                     continue
                 
-                #### 10분 뒤 확인
-                time.sleep(600)
+                #### 5분 뒤 확인
+                time.sleep(300)
             else:
-                #### 10분 뒤 확인
-                time.sleep(600)
+                #### 5분 뒤 확인
+                time.sleep(300)
 
 #### 에러로 인한 종료 시
 if pause_status:

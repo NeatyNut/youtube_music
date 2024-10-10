@@ -10,20 +10,22 @@ import warnings
 class time_table:
     def __init__(self) -> None:
         ### xlsx_config.ini 경로
-        config_name = os.path.join(os.getcwd(), "xlsx_config.ini")
+        self.config_name = os.path.join(os.getcwd(), "xlsx_config.ini")
         
         ### xlsx_config.ini 파일이 없다면 빈문서로 생성
-        if not os.path.exists(config_name):
-            with open(config_name, 'w', encoding='utf-8') as address:
+        if not os.path.exists(self.config_name):
+            with open(self.config_name, 'w', encoding='utf-8') as address:
                 pass
         
         ### openpyxl의 경고 문구 지우기
         warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
+        ## 테이블 확인
+        self._get_table()
 
-
+    def _get_table(self):
         while True:
             ### xlsx_config.ini을 접근하여 xlsx 경로 획득
-            with open(config_name, 'r', encoding='utf-8') as address:
+            with open(self.config_name, 'r', encoding='utf-8') as address:
                 self.config_file = address.read()
             
             ### xlsx 경로가 없을 시, UI창 열기
@@ -42,7 +44,7 @@ class time_table:
                     break
                 else :
                     #### 파일 선택 시, xlsx_config.ini에 Path 기록
-                    with open(config_name, 'w', encoding='utf-8') as address:
+                    with open(self.config_name, 'w', encoding='utf-8') as address:
                         address.write(self.config_file)
 
             ### xlsx 접근 후 데이터 가공 작업
@@ -125,11 +127,24 @@ class time_table:
                 print(f"파일 처리 예외 발생: {e}")
                 
                 #### xlsx_config.ini에 파일 경로 삭제
-                with open(config_name, 'w', encoding='utf-8') as address:
+                with open(self.config_name, 'w', encoding='utf-8') as address:
                     pass
                 
                 #### 반복 요청
                 continue
+
+    def check_time_table(self):
+        ## 테이블 확인
+        ex_time_table = self.time_table
+        ex_onoff_table = self.onoff_table
+        self._get_table()
+
+        if not ex_time_table.equals(self.time_table) or not ex_onoff_table.equals(self.onoff_table):
+            print()
+            print("시간표가 변경되어 Task를 새로이 업데이트 합니다.")
+            print()
+            ## 테이블 출력
+            self.show_task()
 
     ### time 정보 출력
     def show_task(self):
