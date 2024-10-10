@@ -104,7 +104,3 @@ if not isholiday.holiday:
 #### 에러로 인한 종료 시
 if pause_status:
     os.system("pause")
-else :
-    ##### 컴퓨터 종료
-    os.system("shutdown -l")
-    os.system("shutdown -s -t 0")
