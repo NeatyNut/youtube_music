@@ -70,9 +70,6 @@ if not isholiday.holiday:
                 time.sleep(time_table.pause_time*3600 - (datetime.now().minute - time_table.pause_minute)*60) ##### 분 오차를 계산
                 continue
             
-            #### 테이블 변경 확인
-            time_table.check_time_table()
-
             #### 시간대 task 요청
             now_query = tasks.time_task()
 
