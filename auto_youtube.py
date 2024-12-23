@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import shutil
 import os
@@ -32,6 +33,7 @@ class chrome_driver_setting:
         self.options.add_experimental_option("detach", True)
         self.options.add_experimental_option("excludeSwitches", ['enable-logging'])
         self.address = ChromeDriverManager().install()
+        print(self.address)
 
 ## 구글 계정 세팅 클래스
 class is_setting_user:
