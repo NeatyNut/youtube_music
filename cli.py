@@ -28,6 +28,12 @@ if not isholiday.holiday:
         ### (구글 계정 세팅 클래스 생성)
         user_setting = youtube.is_setting_user()
 
+        ### 크롬 드라이버 에러 시
+        if not user_setting.driver_status:
+            print("크롬 드라이버 세팅을 확인하여 주십시오. 5초 후 프로그램을 종료합니다.")
+            time.sleep(5)
+            os.sys.exit()
+
         ### 로그인 상태 확인
         if not user_setting.status:
             user_setting.login() #### 로그인 요청
@@ -86,6 +92,7 @@ if not isholiday.holiday:
                             print("5초 후 파일이 종료됩니다.")
                             time.sleep(5)
                             break
+
                     else :
                         if not auto_song.query_open(query):
                             ##### 프로그램 종료
@@ -93,14 +100,16 @@ if not isholiday.holiday:
                             print("5초 후 파일이 종료됩니다.")
                             time.sleep(5)
                             break
+
                 except :
                     continue
                 
                 #### 5분 뒤 확인
-                time.sleep(300)
+                time.sleep(10)
             else:
                 #### 5분 뒤 확인
-                time.sleep(300)
+                auto_song.check_play()
+                time.sleep(10)
 
 #### 에러로 인한 종료 시
 if pause_status:

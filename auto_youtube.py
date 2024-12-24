@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 import shutil
 import os
 import time
+import re
 
 ## 셀레니움 유저 데이터 저장 Path 클래스
 class userfilepath:
@@ -15,6 +16,7 @@ class userfilepath:
 class chrome_driver_setting:
     def __init__(self, headless:bool=False) -> None:
         self.options = Options()
+        
         
         ### headless 오픈을 원할 시
         if headless:
@@ -33,14 +35,48 @@ class chrome_driver_setting:
         self.options.add_experimental_option("detach", True)
         self.options.add_experimental_option("excludeSwitches", ['enable-logging'])
         self.address = ChromeDriverManager().install()
-        print(self.address)
+
+        ### path 추출용 정규식
+        pattern1 = r"(.*?)(?=\d+(\.\d+)+)"
+        pattern2 = r"\d+(\.\d+)+(.*)"
+        match1 = re.search(pattern1, self.address)
+        self.chromedrivers_before_path = match1.group(1)
+
+        match2 = re.search(pattern2, self.address)
+        self.chromedrivers_after_path = match2.group(2).strip()
+        self.chromedrivers_list = os.listdir(self.chromedrivers_before_path)
+
+        ### 크롬 드라이버 갱신용 버전 처리(2개 이하 유지)
+        if len(self.chromedrivers_list) > 2:
+            for i in self.chromedrivers_list[0:len(self.chromedrivers_list)-2]:
+                shutil.rmtree(os.path.join(self.chromedrivers_before_path, i))
+        
 
 ## 구글 계정 세팅 클래스
 class is_setting_user:
     def __init__(self) -> None:
         ## (셀레니움 세팅 클래스 사용)
         self.chrome = chrome_driver_setting(True)
-        self.driver = webdriver.Chrome(self.chrome.address, options=self.chrome.options)
+        self.driver_status = True
+
+        ## 크롬 드라이브 확인
+        try:
+            self.driver = webdriver.Chrome(self.chrome.address, options=self.chrome.options)
+        except:
+            for i in self.chrome.chromedrivers_list:
+                address = '{}{}{}'.format(self.chrome.chromedrivers_before_path, i, self.chrome.chromedrivers_after_path)
+                
+                try:
+                    self.driver = webdriver.Chrome(address, options=self.chrome.options)
+                    self.chrome.address = address
+                    break
+                except:
+                    continue
+
+        ## 셀레니움 오류 시, 중지 시키기
+        if not hasattr(self, 'driver'):
+            self.driver_status = False
+        
         self.driver.implicitly_wait(3)
         
         ### "최유리 숲" 링크로 검색한 결과를 토대로 로그인 판단 => https://www.youtube.com/musicpremium 사이트 진입 확인(로그인X)
@@ -76,6 +112,8 @@ class auto_youtube:
         ## (셀레니움 세팅 클래스 사용)
         self.chrome = chrome_driver_setting()
         self.driver = webdriver.Chrome(self.chrome.address, options=self.chrome.options)
+        self.check_playing = ""
+
         ### 창 최대화
         self.driver.maximize_window()
         
@@ -102,7 +140,8 @@ class auto_youtube:
             else : 
                 play_button = self.driver.find_element(By.CSS_SELECTOR, "#icon")
 
-            play_button.click()
+            self.driver.execute_script("arguments[0].click();", play_button)
+            self.check_playing = self.driver.find_element(By.CSS_SELECTOR, "#left-controls > span").text
         
         except Exception as e:
             #### 에러 메세지 띄움
@@ -134,7 +173,9 @@ class auto_youtube:
             first_one = self.driver.find_element(By.CSS_SELECTOR, "#contents > ytmusic-responsive-list-item-renderer:nth-child(1) > div.flex-columns.style-scope.ytmusic-responsive-list-item-renderer > div.title-column.style-scope.ytmusic-responsive-list-item-renderer > yt-formatted-string > a")
             self.driver.get(url=first_one.get_attribute("href"))
             self.driver.implicitly_wait(3)
-            self.driver.find_element(By.CSS_SELECTOR, "#icon").click()
+            button = self.driver.find_element(By.CSS_SELECTOR, "#icon")
+            self.driver.execute_script("arguments[0].click();", button)
+            self.check_playing = self.driver.find_element(By.CSS_SELECTOR, "#left-controls > span").text
         except Exception as e:
             #### 에러 메세지 띄움
             print(f"유튜브 조작 예외 발생: {e}")
@@ -144,6 +185,18 @@ class auto_youtube:
         #### 프로그램 지속
         return True
     
+    def check_play(self):
+        check_playing = self.driver.find_element(By.CSS_SELECTOR, "#left-controls > span").text
+    
+        if self.check_playing == check_playing:
+            button = self.driver.find_element(By.CSS_SELECTOR, "#icon")
+            self.driver.execute_script("arguments[0].click();", button)
+        else:
+            self.check_playing = check_playing
+    
+    
+        #confirm-button > yt-button-shape > button > yt-touch-feedback-shape > div > div.yt-spec-touch-feedback-shape__fill
+
     ## 셀레니움 종료
     def quit(self):    
         self.driver.quit()

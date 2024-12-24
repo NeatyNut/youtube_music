@@ -126,9 +126,9 @@ class time_table:
                 #### 파일 열다 오류 발생
                 print(f"파일 처리 예외 발생: {e}")
 
-                #### xlsx_config.ini에 파일 경로 삭제
-                with open(self.config_name, 'w', encoding='utf-8') as address:
-                    pass
+                # #### xlsx_config.ini에 파일 경로 삭제
+                # with open(self.config_name, 'w', encoding='utf-8') as address:
+                #     pass
 
                 #### 반복 요청
                 continue
